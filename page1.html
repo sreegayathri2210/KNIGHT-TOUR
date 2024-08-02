@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knight's Tour</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Cinzel', serif;
+            background: linear-gradient(to right, #121212, #090909);
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+        .chessboard {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #fff 25%, transparent 25%), 
+                        linear-gradient(-45deg, #fff 25%, transparent 25%), 
+                        linear-gradient(45deg, transparent 75%, #fff 75%), 
+                        linear-gradient(-45deg, transparent 75%, #fff 75%);
+            background-size: 80px 80px; /* Increased block size */
+            background-position: 0 0, 0 40px, 40px -40px, -40px 0px; /* Adjusted for new block size */
+            z-index: -1;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            max-width: 800px;
+        }
+        h1 {
+            font-size: 3em;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.5em;
+        }
+        .play-button {
+            font-size: 1.5em;
+            padding: 10px 20px;
+            background-color: #ffd700;
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .play-button:hover {
+            background-color: #ffc107;
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 1em;
+        }
+        .knight {
+            position: absolute;
+            width: 40px; /* Increased knight size */
+            height: 40px; /* Increased knight size */
+            background: url('https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg') no-repeat center center / contain;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="chessboard"></div>
+
+    <div class="container">
+        <h1>Knight's Tour</h1>
+        <p>Step into the fascinating world of the Knight's Tour, a classic chess problem that challenges you to move the knight across the entire board without landing on the same square twice. Are you ready to embark on this strategic adventure?</p>
+        <button class="play-button" onclick="location.href='index.html'">Let's Play</button>
+        <footer>© 2024 Knight's Tour. All rights reserved.</footer>
+    </div>
+
+    <!-- Container for dynamically added knights -->
+    <div id="knight-container"></div>
+
+    <script>
+        // Dimensions of the viewport
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const knightSize = 60; // Increased knight size
+        const step = 80; // Increased size of one grid cell
+
+        // Calculate the number of knights needed to cover the viewport
+        const numCols = Math.floor(viewportWidth / step) + 4; // +4 to include extra columns on the sides
+        const numRows = Math.floor(viewportHeight / step);
+
+        function createKnight(x, y) {
+            const knight = document.createElement('div');
+            knight.className = 'knight';
+            knight.style.left = `${x}px`;
+            knight.style.top = `${y}px`;
+            return knight;
+        }
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function placeKnights() {
+            const container = document.getElementById('knight-container');
+            const positions = [];
+
+            // Generate positions in a grid pattern, including additional columns on the left and right
+            for (let row = 0; row < numRows; row++) {
+                for (let col = -2; col < numCols - 2; col++) { // Add extra columns on both sides
+                    positions.push({ x: col * step, y: row * step });
+                }
+            }
+
+            // Shuffle positions array
+            shuffle(positions);
+
+            // Place knights at the shuffled positions
+            for (let i = 0; i < positions.length; i++) {
+                const pos = positions[i];
+                container.appendChild(createKnight(pos.x, pos.y));
+            }
+        }
+
+        // Place knights on page load
+        window.onload = placeKnights;
+    </script>
+</body>
+</html>
